@@ -190,7 +190,7 @@ template "#{node['apache']['dir']}/ports.conf" do
   notifies :reload, 'service[apache2]'
 end
 
-template "#{node['apache']['dir']}/sites-available/default" do
+template "#{node['apache']['dir']}/sites-available/default.conf" do
   source   'default-site.erb'
   owner    'root'
   group    node['apache']['root_group']
@@ -203,7 +203,11 @@ node['apache']['default_modules'].each do |mod|
   include_recipe "apache2::#{module_recipe_name}"
 end
 
-apache_site 'default' do
+apache_site '000-default.conf' do
+  enable ! node['apache']['default_site_enabled']
+end
+
+apache_site 'default.conf' do
   enable node['apache']['default_site_enabled']
 end
 
